@@ -2,125 +2,109 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Có điều muốn nói...</title>
+<title>Đang tải...</title>
 
 <style>
 body {
   margin: 0;
-  height: 100vh;
+  background: black;
+  color: lime;
+  font-family: monospace;
   overflow: hidden;
-  display: flex;
+}
+
+
+#loading {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  font-size: 18px;
+  animation: flicker 0.1s infinite;
+}
+
+@keyframes flicker {
+  0% {opacity: 1;}
+  50% {opacity: 0.3;}
+  100% {opacity: 1;}
+}
+
+
+#prank {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, pink, purple);
+  color: white;
   justify-content: center;
   align-items: center;
-  font-family: Arial;
-  background: linear-gradient(45deg, #ff9a9e, #fad0c4);
-}
-
-.container {
   text-align: center;
-  color: white;
-  animation: fadeIn 2s ease;
+  flex-direction: column;
 }
 
-h1 {
-  font-size: 40px;
-  animation: float 2s infinite alternate;
+
+#message {
+  font-size: 35px;
+  animation: bounce 1s infinite alternate;
 }
 
-button {
-  padding: 12px 25px;
-  font-size: 18px;
-  margin: 10px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.3s;
+@keyframes bounce {
+  from {transform: scale(1);}
+  to {transform: scale(1.1);}
 }
 
-#yes {
-  background: #00ffcc;
-}
 
-#no {
-  background: #ff4d4d;
-  position: absolute;
-}
-
-@keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
-}
-
-@keyframes float {
-  from {transform: translateY(0);}
-  to {transform: translateY(-10px);}
-}
-
-.heart {
-  position: fixed;
-  bottom: -10px;
-  font-size: 24px;
-  animation: fly 4s linear forwards;
-}
-
-@keyframes fly {
-  to {
-    transform: translateY(-100vh);
-    opacity: 0;
-  }
+@keyframes shake {
+  0% {transform: translate(0);}
+  25% {transform: translate(5px, -5px);}
+  50% {transform: translate(-5px, 5px);}
+  75% {transform: translate(5px, 5px);}
+  100% {transform: translate(0);}
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-  <h1 id="text">Tớ có vài bí mật muốn kể cho mọi người, liệu mọi người có muốn nghe không ?</h1>
-  <button id="yes">Có nghe</button>
-  <button id="no">Hông nghe</button>
-  <p id="result" style="font-size:24px;"></p>
+
+<div id="loading">
+  <p>Đang tải dữ liệu...</p>
+  <p>Đang kết nối server...</p>
+  <p>Đang truy cập hệ thống...</p>
+  <p style="color:red;">⚠️ Phát hiện lỗi hệ thống...</p>
+</div>
+
+
+<div id="prank">
+  <h1 id="message"></h1>
 </div>
 
 <script>
-const noBtn = document.getElementById("no");
-const yesBtn = document.getElementById("yes");
 
-document.addEventListener("mousemove", (e) => {
-  const rect = noBtn.getBoundingClientRect();
+setTimeout(() => {
+  document.getElementById("loading").style.display = "none";
+  document.getElementById("prank").style.display = "flex";
 
-  const distance = Math.hypot(
-    e.clientX - (rect.left + rect.width/2),
-    e.clientY - (rect.top + rect.height/2)
-  );
+  document.body.style.animation = "shake 0.3s";
 
-  if (distance < 120) {
-    const x = Math.random() * (window.innerWidth - 100);
-    const y = Math.random() * (window.innerHeight - 50);
+  typeText("Ú òa 🤡 bị lừa rồi nha!\nChúc cả nhà 1/4 vui vẻeee :3");
+}, 30000);
 
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
+function typeText(text) {
+  let i = 0;
+  const speed = 50;
+  const msg = document.getElementById("message");
+
+  function typing() {
+    if (i < text.length) {
+      msg.innerHTML += text.charAt(i) === "\n" ? "<br>" : text.charAt(i);
+      i++;
+      setTimeout(typing, speed);
+    }
   }
-});
 
-yesBtn.onclick = () => {
-  document.getElementById("text").innerHTML = "ĐÓ CHÍNH LÀAAAA";
-  document.getElementById("result").innerHTML = "Đùa đấy tớ iuu mng nhiều lắm";
-  setInterval(createHeart, 300);
-};
-
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.classList.add("heart");
-  heart.innerHTML = "💖";
-
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.fontSize = (Math.random() * 20 + 20) + "px";
-
-  document.body.appendChild(heart);
-
-  setTimeout(() => {
-    heart.remove();
-  }, 4000);
+  typing();
 }
 </script>
 
